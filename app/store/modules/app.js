@@ -2,8 +2,11 @@ import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators'
 
 @Module({ stateFactory: true, namespaced: true, name: 'app' })
 class App extends VuexModule {
-  isDisabled = 0
-  isVisible = false
+  isDrawerDisabled = false // disable drawer
+  isDrawerToggled = false // toggle drawer
+  isSelectedAreaCleared = false // study area (define study area)
+  areInstructionsToggled = false // instructions
+  isMetadataToggled = false // metadata
 
   steps = [
     {
@@ -43,39 +46,101 @@ class App extends VuexModule {
 
   /**
    * Determine if drawer can be toggled.
+   * @param {number} step
    */
   @Mutation
   disableDrawer(step) {
-    if (step == 1) {
-      return (this.isDisabled = 0)
-    } else {
-      return (this.isDisabled = 1)
-    }
+    return step == 1 ? (this.isDrawerDisabled = 0) : (this.isDrawerDisabled = 1)
   }
 
   /**
    * Toggle drawer with options click filter datasets.
-   * @param {*} openDrawer
+   * @param {boolean} isDrawerToggled
    */
   @Mutation
-  setDrawer(isVisible) {
-    this.isVisible = isVisible
+  setDrawer(isDrawerToggled) {
+    this.isDrawerToggled = isDrawerToggled
   }
 
+  /**
+   * Clear or save previously defined study area.
+   * @param {boolean} isSelectedAreaCleared
+   */
+  @Mutation
+  setSelectedArea(isSelectedAreaCleared) {
+    this.isSelectedAreaCleared = isSelectedAreaCleared
+  }
+
+  /**
+   * Toggle metadata dialog
+   * @param {boolean} isMetadataToggled
+   */
+  @Mutation
+  setMetadata(isMetadataToggled) {
+    this.isMetadataToggled = isMetadataToggled
+  }
+
+  /**
+   * Toggle instructions dialog
+   * @param {boolean} areInstructionsToggled
+   */
+  @Mutation
+  setInstructions(areInstructionsToggled) {
+    this.areInstructionsToggled = areInstructionsToggled
+  }
+
+  /**
+   * Using step number, determine if drawer can be toggled.
+   * @param {number} step
+   * @returns {boolean}
+   */
   @Action({ commit: 'disableDrawer' })
   canShowDrawer(step) {
     this.context.commit('disableDrawer', step)
-    return isDisabled
+    return isDrawerDisabled
   }
 
   /**
    * Pass value to toggle drawer.
-   * @param {*} isVisible Value that determines show/hide (1/0)drawer
+   * @param {boolean} isDrawerToggled Value that determines show/hide (1/0)drawer
    */
   @Action({ commit: 'setDrawer' })
-  toggleDrawer(isVisible) {
-    this.context.commit('setDrawer', isVisible)
-    return isVisible
+  toggleDrawer(isDrawerToggled) {
+    this.context.commit('setDrawer', isDrawerToggled)
+    return isDrawerToggled
+  }
+
+  /**
+   * Pass value to toggle metadata dialog.
+   * @param {boolean} isMetadataToggled
+   * @returns {boolean}
+   */
+  @Action({ commit: 'setMetadata' })
+  toggleMetadata(isMetadataToggled) {
+    this.context.commit('setMetadata', isMetadataToggled)
+    return isMetadataToggled
+  }
+
+  /**
+   * Pass value to toggle instructions dialog.
+   * @param {boolean} areInstructionsToggled
+   * @returns {boolean}
+   */
+  @Action({ commit: 'setInstructions' })
+  toggleInstructions(areInstructionsToggled) {
+    this.context.commit('setInstructions', areInstructionsToggled)
+    return areInstructionsToggled
+  }
+
+  /**
+   * Pass value to clear or save current study area.
+   * @param {boolean} isSelectedAreaCleared
+   * @returns {boolean}
+   */
+  @Action({ commit: 'setSelectedArea' })
+  clearStudyArea(isSelectedAreaCleared) {
+    this.context.commit('setSelectedArea', isSelectedAreaCleared)
+    return isSelectedAreaCleared
   }
 }
 
